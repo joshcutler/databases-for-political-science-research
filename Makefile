@@ -6,7 +6,8 @@ all: paper.pdf
 
 ### Paper Targets ###
 paper.pdf: paper/paper.tex \
-					 vc.tex 
+					 vc.tex \
+					 references.bib
 	cd paper && $(TEX2PDF) paper.tex
 	cp paper/paper.pdf .
 
