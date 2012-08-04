@@ -104,6 +104,40 @@ speed advantages for large datasets and tools for geographic and spatial data.
 
 \subsubsection{Connecting survey responses and Census information}
 
+An online survey experiment with a pool of Canadian citizens
+generated data on respondents' perceptions of the racial, ethnic, and partisan
+compositions of respondents' communities. Respondents were randomly assigned
+to see a map that included a randomly assigned official political district,
+from large Census Divisions down to small Dissemination Areas (the equivalent
+of U.S. Census tracts). Researchers were interested to see if respondents were
+more accurate in describing the true composition of small districts versus
+large districts. Consequently, individual level responses had to be connected
+to aggregate level information at the various census district levels.
+
+Since the survey data and the census
+data were both in a tabular format (\texttt{.csv}), the team of researchers
+decided to build an ad-hoc database out of the flat files and use \R's
+\texttt{merge} function to handle constructing a composite table from the
+component pieces. First, each respondent was geocoded to generate a
+latitude-longitude coordinate. Next, each of these points was compared with
+shape files for the census districts to find the ID number for the districts
+for each respondent (more details on this process can be found in
+Section~\ref{sec:additionaluses}). At this point, there were two tables: the
+survey responses in one table and a table of subject IDs and district IDs.
+These tables were merged on the ID field. The results were then repeatedly
+merged with the census data using the district ID fields.
+Figure~\ref{fig:surveycensus} shows how the tables were connected.
+
+[TODO: figure here]
+
+With the composite table completed, researchers could analyze it using
+standard \R tools, such as the \texttt{lm} function. Following the suggestions
+in \citet{Fredrickson:2010fk}, the process by which the combined table was
+created was written in a series of scripts (specifically, using \texttt{gnu
+make}). If data at the subject level or census level had to be adjusted or
+extended, the scripts could be re-run to generate a new composite table with
+the appropriate updates.
+
 \subsection{Relational Databases}
 
 \subsubsection{Multi-language data interaction source}
@@ -119,6 +153,7 @@ speed advantages for large datasets and tools for geographic and spatial data.
 \subsubsection{Using the \texttt{RBerkeley} package}
 
 \section{Additional Uses}
+\label{sec:additionaluses}
 
 %%% - spatial databases (postgis)
 %%% - proprietary (e.g. saleforce, getactive, are there social science specific
