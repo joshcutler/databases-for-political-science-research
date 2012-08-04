@@ -142,7 +142,37 @@ the appropriate updates.
 
 \subsubsection{Multi-language data interaction source}
 
-\citep{Fredrickson:2010fk}
+On key advantage of a well known relational database is that it can be used as
+an interaction point for tools written in different languages. If all the
+tools can connect to the database, researchers do not need to worry about
+transforming data from a format for one tool to the format for another tool.
+As an example, researchers were building a collection of hate crime incidents
+across the United States and connecting these incidents to information on the
+counties in which they occurred. A relational database provided a place for
+tools for web scraping, geocoding, and spatial analysis to interact, as well
+as housing data at multiple levels in appropriate tables.
+
+The Southern Poverty Law Center collects hate crime events from media reports
+across the United States. At the time of this analysis, the results were plotted
+on a map on their website
+(\href{http://www.splcenter.org/get-informed/hate-incidents}{the data have subsequently been released as
+\texttt{.csv} file}). By reading the page source of the map display page, the
+researchers realized they could fetch the results as RSS files for each state
+(an XML format often used to publish feeds from blogs).
+To perform this task, a series of Ruby scripts were developed to scrape this
+data and turn it into a convenient tabular format. These data were then
+inserted into a relational database.
+
+Each hate incident had to be geocoded in order to find the county in which the
+event occurred. Using Google's geocoding service, a Clojure application was
+written to geocode the incidents and match the point to the proper county
+using shape files of every Unite States county. The FIPS code for the matched
+county was inserted into the table of hate incidents.
+The FIPS code was used to link the events table in the database to a table of
+county information released by the U.S. Census. Census data was released in
+tabular format, making it easy to add to the database. For the final analysis,
+the researchers connected to the database using \R's \texttt{DBI} package and
+created tables by issuing SQL commands.
 
 \subsubsection{A small database using the \texttt{RSQLite} package}
 
