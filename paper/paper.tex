@@ -103,6 +103,7 @@ speed advantages for large datasets and tools for geographic and spatial data.
 \subsection{Flat Files}
 
 \subsubsection{Connecting survey responses and Census information}
+\label{sec:surveycensus}
 
 An online survey experiment with a pool of Canadian citizens
 generated data on respondents' perceptions of the racial, ethnic, and partisan
@@ -179,6 +180,50 @@ created tables by issuing SQL commands.
 \subsection{Key-value Databases}
 
 \subsubsection{Flexibly storing survey questions and responses}
+
+Researchers looking to run online surveys and survey experiments might first
+look to a relational database to house data from respondents. At first, this
+strategy seems to make sense. The goal is to collect data on respondents
+(rows), with a series of responses (columns). If respondents are grouped in
+some fashion, these groupings can be expressed by foreign keys in other tables
+in the database. While this describes the outcome of the survey experiment, it
+ignores the process of developing the survey.
+In the process of writing
+survey experiments, researchers will certainly add questions, delete
+questions, and change the possible answers to questions. In most relational
+databases, if the results for a question were stored in its own field, these
+changes would require updating both the code handling the question prompts as
+well as the database schema, the description of the tables that includes the
+data types of the columns. These updates would be time consuming and provide
+an opportunity for bugs to sneak in as the front end and back end code bases
+might have different understandings of the data format.
+
+\href{https://github.com/markmfredrickson/shanks}{Shanks} is a software
+package for creating online survey experiments that takes a different
+strategy. Instead of a relational database, Shanks uses a ``schema-free''
+database.\footnote{While any key-value database would be able to provide this
+service, Shanks currently only has an implementation that uses Google App
+Engine's datastore service.} When respondents begin the survey, they are
+assigned a unique ID. Any randomizations or immediate data are saved to the
+database under their ID number. As they progress through the individual screens in the
+survey, all previous answers are fetched and new answers saved. The database
+is agnostic about the content fetched; simply returns all data for a given ID
+number. During development, researchers could add or delete questions and the
+changes would be immediate in the database. Additionally, based on
+randomizations or previous answers, some respondents see different questions
+than others. These differences do not pose any problem for the database.
+
+Shanks was used for the survey discussed in Example~\ref{sec:surveycensus}.
+For the purposes of analysis, the research team exported the survey responses
+as a flat \texttt{.csv} file. The rows were the individual survey responses.
+The columns were the union of all possible questions encountered by subjects.
+For questions encountered by all subjects, the columns were filled in
+entirely. For columns only encountered by some subjects, \texttt{NA} values
+were inserted for subjects who did not see the question. By waiting until the
+analysis stage to put the data in a rectangular format, the researchers were
+able to very quickly create and edit the survey on a live test server, but
+export it in a format that was easy to combine with Census data and use in a
+simple ad-hoc database.
 
 \subsubsection{Using the \texttt{RBerkeley} package}
 
